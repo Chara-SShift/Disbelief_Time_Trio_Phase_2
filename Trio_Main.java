@@ -30,7 +30,7 @@ class Trio_sub extends JFrame implements KeyListener, Runnable{
 	boolean exitx = false;
 	boolean keyReDown = false;
 	int cnt;
-	attackStarter atkst;//공격이 나오는 점
+	attackStarter atkst;//the attacks starts here
 	enemy.OrangeKnife okn;
 	enemy.Knife kn;
 	enemy.BlueKnife bkn;
