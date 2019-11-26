@@ -1,7 +1,7 @@
 import javax.swing.*;
 
-import javafx.scene.transform.Rotate;
 
+import javafx.scene.transform.Rotate;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
@@ -30,7 +30,7 @@ class Trio_sub extends JFrame implements KeyListener, Runnable{
 	boolean exitx = false;
 	boolean keyReDown = false;
 	int cnt;
-	attackStarter atkst;//the attacks starts here
+	attackStarter atkst;//the attacks start here
 	enemy.OrangeKnife okn;
 	enemy.Knife kn;
 	enemy.BlueKnife bkn;
@@ -61,7 +61,7 @@ class Trio_sub extends JFrame implements KeyListener, Runnable{
 	Trio_sub(){
 		init();
 		start();
-		setTitle("DisBelief Time Trio");
+		setTitle("DisBelief Time Trio Phase 2");
 		setSize(f_width, f_height);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		
@@ -92,7 +92,7 @@ class Trio_sub extends JFrame implements KeyListener, Runnable{
 		orangebone_image = toki.getImage("Orangebone.png");
 		bone_image = toki.getImage("Bone.png");
 		game_time = 0;
-		Player_HP = 92;
+		Player_HP = 278;
 		Heart_Status = 3;
 		if (Heart_Status == 2) {
 			keyRight = true;
@@ -110,7 +110,7 @@ class Trio_sub extends JFrame implements KeyListener, Runnable{
 		try {
 			while (true) {
 				KeyProcess();
-				
+				EnemyTurn();
 				
 				
 				repaint();
@@ -118,7 +118,138 @@ class Trio_sub extends JFrame implements KeyListener, Runnable{
 			}
 		}catch(Exception e) {}
 	}
-	
+	public void EnemyTurn() {//crash?? or not??
+		for (int i = 0; i < Knife_List.size(); i++) {
+			Image ask = null;
+			if (Heart_Status == 1) {
+				ask = redHeart;
+			}
+			else if (Heart_Status == 2) {
+				ask = orangeHeart;
+			}
+			else if (Heart_Status == 3) {
+				ask = blueHeart;
+			}
+			if (Crash(x, y, kn.pos.x, kn.pos.y, Knife_image, ask)) {
+				Player_HP -= 2;
+			}
+			
+		}
+		for (int i = 0; i < blueKnife_List.size(); i++) {
+			Image ask = null;
+			if (Heart_Status == 1) {
+				ask = redHeart;
+			}
+			else if (Heart_Status == 2) {
+				ask = orangeHeart;
+			}
+			else if (Heart_Status == 3) {
+				ask = blueHeart;
+			}
+			if (Crash(x, y, bkn.pos.x, bkn.pos.y, blueknife_image, ask)) {
+				if (keyDown == true || keyUp == true || keyLeft == true || keyRight == true) {
+					Player_HP -= 2;
+				}
+			}
+		}
+		for (int i = 0; i < orangeKnife_List.size(); i++) {
+			Image ask = null;
+			if (Heart_Status == 1) {
+				ask = redHeart;
+			}
+			else if (Heart_Status == 2) {
+				ask = orangeHeart;
+			}
+			else if (Heart_Status == 3) {
+				ask = blueHeart;
+			}
+			if (Crash(x, y, okn.pos.x, okn.pos.y, orangeknife_image, ask)) {
+				if (keyDown == false && keyUp == false && keyLeft == false && keyRight == false) {
+					if (Heart_Status != 2) {
+						Player_HP -= 2;
+					}
+				}
+			}
+		}
+		for (int i = 0; i < bone_List.size(); i++) {
+			Image ask = null;
+			if (Heart_Status == 1) {
+				ask = redHeart;
+			}
+			else if (Heart_Status == 2) {
+				ask = orangeHeart;
+			}
+			else if (Heart_Status == 3) {
+				ask = blueHeart;
+			}
+			if (Crash(x, y, bo.pos.x, bo.pos.y, bone_image, ask)) {
+				Player_HP -= 1;
+			}
+			
+		}
+		for (int i = 0; i < bluebone_List.size(); i++) {
+			Image ask = null;
+			if (Heart_Status == 1) {
+				ask = redHeart;
+			}
+			else if (Heart_Status == 2) {
+				ask = orangeHeart;
+			}
+			else if (Heart_Status == 3) {
+				ask = blueHeart;
+			}
+			if (Crash(x, y, bbo.pos.x, bbo.pos.y, bluebone_image, ask)) {
+				if (keyDown == true || keyUp == true || keyLeft == true || keyRight == true) {
+					Player_HP -= 2;
+				}
+			}
+		}
+		for (int i = 0; i < orangebone_List.size(); i++) {
+			Image ask = null;
+			if (Heart_Status == 1) {
+				ask = redHeart;
+			}
+			else if (Heart_Status == 2) {
+				ask = orangeHeart;
+			}
+			else if (Heart_Status == 3) {
+				ask = blueHeart;
+			}
+			if (Crash(x, y, obo.pos.x, obo.pos.y, orangebone_image, ask)) {
+				if (keyDown == false && keyUp == false && keyLeft == false && keyRight == false) {
+					if (Heart_Status != 2) {
+						Player_HP -= 1;
+					}
+				}
+			}
+		}
+		for (int i = 0; i < wallknife_List.size(); i++) {
+			Image ask = null;
+			if (Heart_Status == 1) {
+				ask = redHeart;
+			}
+			else if (Heart_Status == 2) {
+				ask = orangeHeart;
+			}
+			else if (Heart_Status == 3) {
+				ask = blueHeart;
+			}
+			
+		}
+	}
+	public boolean Crash(int x1, int y1, int x2, int y2, Image img1, Image img2) {
+		boolean check = false;
+		if (Math.abs((x1 +img1.getWidth(null)/2) - (x2 + img2.getWidth(null)/2))< ( img2.getWidth(null) / 2 + img1.getWidth(null) / 2 ) && Math.abs( ( y1 + img1.getHeight(null) / 2 ) - ( y2 + img2.getHeight(null) / 2 )) < ( img2.getHeight(null)/2 + img1.getHeight(null)/2 )){
+			check = true;
+		}
+		else{
+			check = false;
+		}
+		return check;
+						 
+ 
+			
+	}
 	public void paint(Graphics g) {
 		buffimage = createImage(f_width, f_height);
 		buffg = buffimage.getGraphics();
@@ -132,8 +263,6 @@ class Trio_sub extends JFrame implements KeyListener, Runnable{
 		Draw_Attack();
 		Draw_HP();
 		Draw_char();
-		
-		
 		
 		g.drawImage(buffimage, 0, 0, this);
 		
