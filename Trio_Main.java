@@ -1,17 +1,24 @@
 import javax.swing.*;
-
-
 import javafx.scene.transform.Rotate;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
 import java.util.*;
-import java.util.Random;
 
 public class Trio_Main{
 
 	public static void main(String[] args) {
-		Trio_sub trio = new Trio_sub();
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					selection_window window = new selection_window();
+					window.frmSelectDifficulty.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		
 	}
 }
 
@@ -21,7 +28,7 @@ class Trio_sub extends JFrame implements KeyListener, Runnable{
 	
 	int x, y, gravity, gravtime;
 	int rect_up, rect_down, rect_left, rect_right;
-	
+
 	//interface
 	boolean keyUp = false;
 	boolean keyDown = false;
@@ -29,6 +36,7 @@ class Trio_sub extends JFrame implements KeyListener, Runnable{
 	boolean keyRight = false;
 	boolean exitx = false;
 	boolean keyReDown = false;
+	boolean is_moving = false;
 	int cnt;
 	attackStarter atkst;//the attacks start here
 	enemy.OrangeKnife okn;
@@ -46,20 +54,20 @@ class Trio_sub extends JFrame implements KeyListener, Runnable{
 	Toolkit toki = Toolkit.getDefaultToolkit();
 	Image redHeart, blueHeart, orangeHeart;
 	Image orangeknife_image,orangebone_image, blueknife_image, bluebone_image, Knife_image, bone_image;
-	ArrayList attackStarter_List = new ArrayList();
-	ArrayList Knife_List = new ArrayList();
-	ArrayList orangeKnife_List = new ArrayList();
-	ArrayList blueKnife_List = new ArrayList();
-	ArrayList bone_List = new ArrayList();
-	ArrayList bluebone_List = new ArrayList();
-	ArrayList orangebone_List = new ArrayList();
-	ArrayList wallknife_List = new ArrayList();
+	ArrayList<attackStarter> attackStarter_List = new ArrayList<attackStarter>();
+	ArrayList<enemy.Knife> Knife_List = new ArrayList<enemy.Knife>();
+	ArrayList<enemy.OrangeKnife> orangeKnife_List = new ArrayList<enemy.OrangeKnife>();
+	ArrayList<enemy.BlueKnife> blueKnife_List = new ArrayList<enemy.BlueKnife>();
+	ArrayList<enemy.Bone> bone_List = new ArrayList<enemy.Bone>();
+	ArrayList<enemy.BlueBone> bluebone_List = new ArrayList<enemy.BlueBone>();
+	ArrayList<enemy.OrangeBone> orangebone_List = new ArrayList<enemy.OrangeBone>();
+	ArrayList<enemy.wallknife> wallknife_List = new ArrayList<enemy.wallknife>();
 	Image buffimage; 
 	Graphics buffg;
 	
 	Image backGround_img;
-	Trio_sub(){
-		init();
+	Trio_sub(int difficulty){
+		init(difficulty);
 		start();
 		setTitle("DisBelief Time Trio Phase 2");
 		setSize(f_width, f_height);
@@ -72,14 +80,16 @@ class Trio_sub extends JFrame implements KeyListener, Runnable{
 		setResizable(false);
 		setVisible(true);
 	}
-	public void init() {
+	public void init(int difficulty) {
+		
+
 		x = 490;
 		y = 520;
 		f_width = 1000;
 		f_height = 750;
 		gravity = 0;
 		gravtime = 25;
-		
+		Heart_Status = 3;
 		backGround_img = toki.getImage("DTT_BG.png");
 		
 		redHeart =  toki.getImage("Frisk_redheart.png");
@@ -92,8 +102,7 @@ class Trio_sub extends JFrame implements KeyListener, Runnable{
 		orangebone_image = toki.getImage("Orangebone.png");
 		bone_image = toki.getImage("Bone.png");
 		game_time = 0;
-		Player_HP = 278;
-		Heart_Status = 3;
+		Player_HP = 92 * difficulty;
 		if (Heart_Status == 2) {
 			keyRight = true;
 		}
@@ -365,8 +374,63 @@ class Trio_sub extends JFrame implements KeyListener, Runnable{
 		double rand = (Math.random() * 2);
 		
 	}
-	public void if_hit(enemy enemy, Object heart) {
-		
+	public void if_hit(enemy.BlueKnife Enemy, Image heart) {
+		if(Enemy.pos.x == x) {
+			if (Enemy.pos.y == y) {
+				if (is_moving) {
+					Player_HP -= 4;
+				}
+			}
+		}
+	}
+	
+	public void if_hit(enemy.BlueBone Enemy, Image heart) {
+		if(Enemy.pos.x == x) {
+			if (Enemy.pos.y == y) {
+				if (is_moving) {
+					Player_HP -= 2;
+				}
+			}
+		}
+	}
+	public void if_hit(enemy.OrangeBone Enemy, Image heart) {
+		if(Enemy.pos.x == x) {
+			if (Enemy.pos.y == y) {
+				if (is_moving == false) {
+					Player_HP -= 2;
+				}
+			}
+		}
+	}
+	public void if_hit(enemy.OrangeKnife Enemy, Image heart) {
+		if(Enemy.pos.x == x) {
+			if (Enemy.pos.y == y) {
+				if (is_moving == false) {
+					Player_HP -= 4;
+				}
+			}
+		}
+	}
+	public void if_hit(enemy.wallknife Enemy, Image heart) {
+		if(Enemy.pos.x == x) {
+			if (Enemy.pos.y == y) {
+					Player_HP -= 4;
+			}
+		}
+	}
+	public void if_hit(enemy.Knife Enemy, Image heart) {
+		if(Enemy.pos.x == x) {
+			if (Enemy.pos.y == y) {
+					Player_HP -= 4;
+			}
+		}
+	}
+	public void if_hit(enemy.Bone Enemy, Image heart) {
+		if(Enemy.pos.x == x) {
+			if (Enemy.pos.y == y) {
+					Player_HP -= 2;
+			}
+		}
 	}
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -489,21 +553,25 @@ class Trio_sub extends JFrame implements KeyListener, Runnable{
 			if (keyUp) {
 				if(y > 394) {
 					y -= 4;
+					is_moving = true;
 				}
 			}
 			if (keyDown) {
 				if(y < 630) {
 					y += 4;
+					is_moving = true;
 				}
 			}
 			if (keyRight) {
 				if(x < 610) {
 					x += 4;
+					is_moving = true;
 				}
 			}
 			if (keyLeft) {
 				if(x > 374) {
 					x -= 4;
+					is_moving = true;
 				}
 			}
 		}
@@ -513,6 +581,7 @@ class Trio_sub extends JFrame implements KeyListener, Runnable{
 					if(y < 630) {
 						if(keyReDown == false) {
 							y -= 4 + gravity;
+							is_moving = true;
 							
 							if (gravtime == 0) {
 								gravity -= 1;
@@ -532,6 +601,7 @@ class Trio_sub extends JFrame implements KeyListener, Runnable{
 			if (keyRight) {
 				if(x < 610) {
 					x += 3;
+					is_moving = true;
 					if(y < 620) {
 						y -= gravity;
 						/*
@@ -549,8 +619,10 @@ class Trio_sub extends JFrame implements KeyListener, Runnable{
 			if (keyLeft) {
 				if(x > 374) {
 				x -= 3;
+				is_moving = true;
 				if(y < 620) {
 					y -= gravity;
+					is_moving = true;
 					/*
 					if (gravtime == 0) {
 						gravity -= 1;
@@ -568,22 +640,26 @@ class Trio_sub extends JFrame implements KeyListener, Runnable{
 			if (keyUp) {
 				if(y > 394) {
 					y -= 4;
+					is_moving = true;
 					
 				}
 			}
 			if (keyDown) {
 				if(y < 620) {
 					y += 4;
+					is_moving = true;
 				}
 			}
 			if (keyRight) {
 				if(x < 610) {
 					x += 4;
+					is_moving = true;
 				}
 			}
 			if (keyLeft) {
 				if(x > 374) {
 					x -= 4;
+					is_moving = true;
 				}
 			}
 		}
